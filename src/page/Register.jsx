@@ -4,11 +4,13 @@ import { baseUrl } from "../helper";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Input from "../components/Input";
 
 const Register = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
+
     const { register, handleSubmit } = useForm();
 
     const onSubmit = (data) => {
@@ -43,96 +45,10 @@ const Register = () => {
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                Fullname
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    autoComplete="name"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    {...register("name")}
-                                />
-                                {errorMessage.name &&
-                                    errorMessage.name.map((error) => (
-                                        <p className="mt-2 text-sm text-red-600" key={error}>
-                                            {error}
-                                        </p>
-                                    ))}
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email address
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    {...register("email")}
-                                />
-                                {errorMessage.email &&
-                                    errorMessage.email.map((error) => (
-                                        <p className="mt-2 text-sm text-red-600" key={error}>
-                                            {error}
-                                        </p>
-                                    ))}
-                            </div>
-                        </div>
-
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="password"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    {...register("password")}
-                                />
-                                {errorMessage.password &&
-                                    errorMessage.password.map((error) => (
-                                        <p className="mt-2 text-sm text-red-600" key={error}>
-                                            {error}
-                                        </p>
-                                    ))}
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">
-                                Password Confirmation
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="password_confirmation"
-                                    name="password_confirmation"
-                                    type="password"
-                                    autoComplete="password_confirmation"
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    {...register("password_confirmation")}
-                                />
-                                {errorMessage.password &&
-                                    errorMessage.password.map((error) => (
-                                        <p className="mt-2 text-sm text-red-600" key={error}>
-                                            {error}
-                                        </p>
-                                    ))}
-                            </div>
-                        </div>
-
+                        <Input label="Fullname" id="name" type="text" required register={register} errorMessage={errorMessage.name} />
+                        <Input label="Email" id="email" type="email" required register={register} errorMessage={errorMessage.email} />
+                        <Input label="Password" id="password" type="password" required register={register} errorMessage={errorMessage.password} />
+                        <Input label="Confirm password" id="confirm_password" type="password" required register={register} errorMessage={errorMessage.confirm_password} />
                         <div>
                             <button
                                 type="submit"
