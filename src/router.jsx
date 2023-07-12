@@ -14,9 +14,10 @@ const Router = () => {
                 <Route path="/login" Component={Login} />
                 <Route path="/register" Component={Register} />
                 <Route Component={MainLayout}>
-                    <Route path="/" Component={Home} />
+                    <Route path="/" Component={Home}>
+                        <Route path="/:bookId" Component={View} />
+                    </Route>
                     <Route path="/add" Component={Add} />
-                    <Route path="/:bookId" Component={View} />
                     <Route path="/:bookId/edit" Component={Edit} />
                 </Route>
             </Routes>
