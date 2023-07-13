@@ -1,12 +1,12 @@
-version: '3.4'
-
+version: "3.5"
 services:
-  frontend:
-    image: frontend
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: production
-    ports:
-      - 3000:3000
+    app:
+        build: .
+        container_name: vite-react-express
+        command: npm run dev
+        image: vite-react-express:latest
+        ports:
+            - "3000:3000"
+            - "3001:3001"
+        volumes:
+            - .:/app

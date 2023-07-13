@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../helper";
 import useCookie from "../../hook/useCookie";
@@ -15,6 +15,7 @@ const View = () => {
     const [props, setProps] = useState([]);
     const { isbn, title, subtitle, author, published, publisher, pages, description, website } = props;
     const [token] = useCookie("token", null);
+    const navigation = useNavigate();
 
     useEffect(() => {
         const url = baseUrl + `/api/books/${params.bookId}`;
@@ -30,6 +31,7 @@ const View = () => {
             .then((res) => setProps(res.data))
             .catch(({ response: res }) => {
                 if (res.status === 401) {
+                    navigation("/login");
                     return toast.error("User is unauthenticated!");
                 }
                 if (res.status === 403) {

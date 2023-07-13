@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { HiArrowRightOnRectangle, HiOutlineHome } from "react-icons/hi2";
 import useCookie from "../hook/useCookie";
@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 const MainLayout = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [token, setToken] = useCookie("token", null);
-    const navigate = useNavigate();
+    const navigation = useNavigate();
 
     const toggleSidebar = useCallback(() => {
         setSidebarOpen(!isSidebarOpen);
@@ -26,10 +26,11 @@ const MainLayout = () => {
             .delete(url, { headers })
             .then(() => {
                 setToken(token, { expires: 0 });
-                navigate("/login");
+                navigation("/login");
             })
             .catch(({ response: res }) => {
                 if (res.status === 401) {
+                    navigation("/login");
                     return toast.error("User is unauthenticated!");
                 }
                 if (res.status === 500) {
@@ -38,6 +39,12 @@ const MainLayout = () => {
                 return toast.error("Something went wrong!");
             });
     };
+
+    useEffect(() => {
+        if (!token) {
+            navigation("/login");
+        }
+    }, [token]);
 
     return (
         <div className="flex h-screen bg-gray-200">

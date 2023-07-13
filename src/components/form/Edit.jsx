@@ -30,6 +30,7 @@ const Edit = () => {
             })
             .catch(({ response: res }) => {
                 if (res.status === 401) {
+                    navigation("/login");
                     return toast.error("User is unauthenticated!");
                 }
                 if (res.status === 403) {

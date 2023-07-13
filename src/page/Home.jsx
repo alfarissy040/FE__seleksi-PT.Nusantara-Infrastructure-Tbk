@@ -5,7 +5,7 @@ import useCookie from "../hook/useCookie";
 import { toast } from "react-hot-toast";
 import TableItems from "../components/TableItems";
 import ReactPaginate from "react-paginate";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import ConfirmModal from "../components/ConfirmModal";
 
@@ -17,6 +17,7 @@ const Home = () => {
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [confirmBookId, setConfirmBookId] = useState(null);
+    const navigation = useNavigate();
 
     const getBooks = () => {
         const url = baseUrl + `/api/books?page=${currentPage}`;
@@ -33,6 +34,7 @@ const Home = () => {
             })
             .catch(({ response: res }) => {
                 if (res.status === 401) {
+                    navigation("/login");
                     return toast.error("User is unauthenticated!");
                 }
                 if (res.status === 500) {
