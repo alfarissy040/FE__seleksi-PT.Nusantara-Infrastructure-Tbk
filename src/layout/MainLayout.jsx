@@ -2,6 +2,9 @@ import { useCallback, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { HiArrowRightOnRectangle, HiOutlineHome } from "react-icons/hi2";
 import useCookie from "../hook/useCookie";
+import axios from "axios";
+import { baseUrl } from "../helper";
+import { toast } from "react-hot-toast";
 
 const MainLayout = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -13,15 +16,34 @@ const MainLayout = () => {
     }, [isSidebarOpen]);
 
     const signOut = () => {
-        setToken(token, { expires: 0 });
-        navigate("/login");
+        const url = baseUrl + "/api/user/logout";
+        const headers = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
+        axios
+            .delete(url, { headers })
+            .then(() => {
+                setToken(token, { expires: 0 });
+                navigate("/login");
+            })
+            .catch(({ response: res }) => {
+                if (res.status === 401) {
+                    return toast.error("User is unauthenticated!");
+                }
+                if (res.status === 500) {
+                    return toast.error("Server Error!");
+                }
+                return toast.error("Something went wrong!");
+            });
     };
 
     return (
         <div className="flex h-screen bg-gray-200">
             <div className={`${isSidebarOpen ? "block" : "hidden"} bg-gray-800 text-white w-64 sm:block`}>
-                <div className="sm:flex sm:items-center sm:justify-between h-16 hidden">
-                    <h1 className="text-2xl font-bold">Logo</h1>
+                <div className="sm:flex sm:items-center sm:justify-center h-16 hidden">
+                    <h1 className="text-3xl font-bold ">MyBook</h1>
                 </div>
                 <ul className="py-4">
                     <li>
@@ -45,7 +67,7 @@ const MainLayout = () => {
                             {isSidebarOpen ? <path fillRule="evenodd" clipRule="evenodd" d="M19 5H5v2h14V5zm0 6H5v2h14v-2zm0 6H5v2h14v-2z" /> : <path fillRule="evenodd" clipRule="evenodd" d="M4 6h16V4H4v2zm0 5h16v-2H4v2zm0 5h16v-2H4v2z" />}
                         </svg>
                     </button>
-                    <h1 className="text-2xl font-bold text-white">Logo</h1>
+                    <h1 className="text-2xl font-bold text-white">MyBook</h1>
                     <div></div>
                 </div>
                 <Outlet />

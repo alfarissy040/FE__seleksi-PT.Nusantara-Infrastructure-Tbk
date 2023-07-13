@@ -7,14 +7,18 @@ import TableItems from "../components/TableItems";
 import ReactPaginate from "react-paginate";
 import { Link, Outlet } from "react-router-dom";
 import { format } from "date-fns";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Home = () => {
     const [dataBuku, setDataBuku] = useState([]);
     const [token] = useCookie("token", null);
     const [currentPage, setCurrentPage] = useState(1);
     const [maxPage, setMaxPage] = useState(1);
+    const [toggleModal, setToggleModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [confirmBookId, setConfirmBookId] = useState(null);
 
-    useEffect(() => {
+    const getBooks = () => {
         const url = baseUrl + `/api/books?page=${currentPage}`;
         const headers = {
             Accept: "application/json",
@@ -36,7 +40,54 @@ const Home = () => {
                 }
                 return toast.error("Something went wrong!");
             });
-    }, [currentPage, token]);
+    };
+
+    const handleConfirm = (id) => {
+        setToggleModal(true);
+        setConfirmBookId(id);
+    };
+
+    const onDelete = () => {
+        const url = baseUrl + `/api/books/${confirmBookId}`;
+        const headers = {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
+        setIsLoading(true);
+
+        axios
+            .delete(url, { headers })
+            .then(() => {
+                toast.success("success delete book");
+                getBooks();
+            })
+            .catch((err) => {
+                const res = err.response;
+                if (res.status === 401) {
+                    return toast.error("User is unauthenticated!");
+                }
+                if (res.status === 403) {
+                    return toast.error("User doesn't have right to do the request!");
+                }
+                if (res.status === 404) {
+                    return toast.error("Book ID not found!");
+                }
+                if (res.status === 500) {
+                    return toast.error("Server Error!");
+                }
+                return toast.error("Something went wrong!");
+            })
+            .finally(() => {
+                setIsLoading(false);
+                setToggleModal(false);
+                setConfirmBookId(null);
+            });
+    };
+
+    useEffect(() => {
+        getBooks();
+    }, []);
 
     return (
         <>
@@ -73,7 +124,7 @@ const Home = () => {
                         </thead>
                         <tbody>
                             {dataBuku.map((item) => (
-                                <TableItems key={item.id} id={item.id} title={item.title} author={item.author} published={format(new Date(item.published), "P")} publisher={item.publisher} pages={item.pages} />
+                                <TableItems key={item.id} id={item.id} title={item.title} author={item.author} published={format(new Date(item.published), "P")} publisher={item.publisher} pages={item.pages} onDelete={handleConfirm} />
                             ))}
                         </tbody>
                     </table>
@@ -95,6 +146,7 @@ const Home = () => {
                 </div>
             </div>
             <Outlet />
+            <ConfirmModal isOpen={toggleModal} isLoading={isLoading} onClose={() => setToggleModal(false)} onDelete={onDelete} />
         </>
     );
 };

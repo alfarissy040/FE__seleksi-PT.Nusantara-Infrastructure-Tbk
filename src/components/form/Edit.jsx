@@ -10,7 +10,7 @@ import { toast } from "react-hot-toast";
 import clsx from "clsx";
 
 const Edit = () => {
-    const [token, setToken] = useCookie("token", null);
+    const [token] = useCookie("token", null);
     const [errorMessage, setErrorMessage] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [bookData, setBookData] = useState([]);
@@ -160,7 +160,7 @@ const Edit = () => {
                 </div>
                 <div className="flex items-center justify-end mt-3 mb-8">
                     <button type="submit" className="px-3 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed" disabled={isLoading}>
-                        add
+                        edit
                     </button>
                 </div>
             </form>
